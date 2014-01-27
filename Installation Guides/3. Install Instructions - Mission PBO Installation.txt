@@ -1,7 +1,8 @@
 Installation Instructions for DZAI 1.7.0+ (mission file version)
 Last Updated: 7:39 PM 1/19/2014
+Additions by jwo7777777 2014.01.26
 
-About the Mission File Version of DZAI: Use these instructions to convert the DZAI install package for compatibility with your mission pbo if you are unable to edit your dayz_server.pbo
+About the Mission File Version of DZAI: Use these instructions to convert the DZAI install package for compatibility with your mission pbo since the HC version will not work from a server pbo.
 
 
 What you need:
@@ -9,7 +10,7 @@ What you need:
 - cpbo* or PBO Manager**.
 - A text editor (Notepad++ is recommended).
 - Access to your mission .pbo.
-- A downloaded copy of DZAI
+- A downloaded copy of DZAI-HC
 
 * cpbo can be downloaded as part of the Arma Tools package here: http://www.armaholic.com/page.php?id=411
 ** PBO Manager can be downloaded here: http://www.armaholic.com/page.php?id=16369
@@ -18,18 +19,142 @@ What you need:
 Basic Installation Guide:
 ----------------------------------------------------
 
+0. You need to know how to setup and run a Headless Client.  Read about it at the end of this file.
 1. Unpack your mission pbo. If using cpbo, right click the .pbo file and click "Extract".
-2. Copy the downloaded DZAI folder from the download package inside your unpacked mission folder. In this folder, you should also see init.sqf, mission.sqm, description.ext.
+2a. Copy the downloaded DZAI folder from the download package inside your unpacked mission folder. In this folder, you should also see init.sqf, mission.sqm, description.ext.
+2b. Copy initHC.sqf, HCsignals.sqf, and handle_HCstartDZAIrcv.sqf to the mission folder.  They should be at the same folder level as init.sqf, description.ext, and mission.sqf
 3. Edit DZAI\init\DZAI_version.hpp with a text editor. Remove the double slashes on Line 9 as instructed in the file. The line should now look like this:
 
 	#define DZAI_MISSIONFILE_INSTALL 1
 
-4. Edit your mission init.sqf with a text editor. Add this line at the end of your init.sqf:
+4a. Edit your mission init.sqf with a text editor. Find this line in your init.sqf:
 
-    if (isServer) then {call compile preprocessFileLineNumbers "DZAI\dzai_initserver.sqf";};
+    call compile preprocessFileLineNumbers "\z\addons\dayz_code\init\compiles.sqf";	//Compile regular functions
+    
+  Replace it with this:
+
+    if (isServer || hasInterface) then {
+        call compile preprocessFileLineNumbers "\z\addons\dayz_code\init\compiles.sqf";	//Compile regular functions
+    }; // headless clients are like isDedicated for some things.  No compiles needed from dayz_code init
+    
+4b.  Still in init.sqf.  Find progressloadingscreen 1.0; and add this line just above it:
+
+    call compile preprocessFileLineNumbers "initHC.sqf"; // fixes and HC stuff
+
+4c.  Do not let the headless client run the server_monitor or player_monitor scripts.  Change anything in the init.sqf that says this:
+  
+  if (!isDedicated)
+  
+  change it to:
+  
+  if (!isDedicated && hasInterface)
 
 5. Optionally, you may edit DZAI's settings in DZAI\init\dzai_config.sqf
 
 6. Repack your mission pbo by right-clicking the unpacked folder, then click on "create PBO". If prompted to overwrite, click "Yes".
 
 Note: You may store your custom settings changes in DZAI\DZAI_settings_override.sqf. This file is a convenient way to store and transfer your custom settings when upgrading to a newer version of DZAI. Further instructions are provided inside this file.
+
+------------------------------
+
+Headless Client barebones how to:
+1)  If planning to use BattleEye, you will need another Arma software key.  Supposedly you can do this by installing non-steam version in a different location than your initial install.  The point is that the headless client is just an Arma2oa.exe but without a display.
+
+2)  If planning to use BattleEye, you will need to solve the script kick issues that will arise.  Running the DZAI-HC on a headless client doesn't give server level scripting privileges.  BattleEye will scrutinize every line the HC runs as it runs it.
+
+3)  Modify server config.cfg.  Add
+     
+     localclient[]={"<the ip of the headless client, e.g. 127.0.0.1>"};
+
+    just above the 
+     
+     class Missions
+     {
+     
+5)  In mission.sqm in your missions folder, change 
+	
+	class Groups
+	{
+		items=2;
+	
+     TO
+     
+     	class Groups
+	{
+		items=3;
+
+6)  Also in mission.sqm, insert the   class Item2   entry like below: (HC position will be different for each map)
+	
+	... (lots of other stuff)
+	class Item1
+		{
+			side="LOGIC";
+			class Vehicles
+			{
+				items=1;
+				class Item0
+				{
+					position[]={-143.93861,0.52647489,2319.5012};
+					id=50;
+					side="LOGIC";
+					vehicle="FunctionsManager";
+					leader=1;
+					lock="UNLOCKED";
+					skill=0.60000002;
+				};
+			};
+		};
+	class Item2
+		{
+			side="CIV";
+			class Vehicles
+			{
+				items=1;
+				class Item0
+				{
+					position[]={ PUT SAME POSITION INFO AS THE MARKER BELOW CALLED "center" };
+					id=0;
+					side="CIV";
+					vehicle="Survivor1_DZ";
+					player="PLAYER COMMANDER";
+					skill=0.60000002;
+					text="HeadlessClient";
+					init="this allowDamage false";
+					description="HeadlessClient";
+					name="HeadlessClient";
+					forceHeadlessClient=1;
+				};
+			};
+		};
+	};
+	class Markers
+	{
+		items=37;
+		class Item0
+		{
+			position[]={ SOME POSITION INFO IS NORMALLY HERE };
+			name="center";
+			type="Empty";
+			.... (other stuff)
+
+
+7) Still in mission.sqm DELETE class Item99 from the west side (should be a little above the change you just made)
+
+	class Item99
+	{
+		position[]={....(some position)....};
+		azimut=-17.0839;
+		id= ... (some ID) ...;
+		side="WEST";
+		vehicle="Survivor1_DZ";
+		player="PLAY CDG";
+		skill=0.60000002;
+		init="this enableSimulation false;this allowDammage false;this disableAI 'FSM';this disableAI 'ANIM';this disableAI 'MOVE';";
+	};
+				
+				
+8)Start the headless client (some time after starting the server) with a line like:
+
+    call "\Expansion\beta\ARMA2OA.exe" -skipIntro -nosplash -showScriptErrors -noPause -client -connect=<server IP> -port=<server PORT> -nosound "-mod=EXPANSION;ca" "-mod=Expansion\beta;Expansion\beta\Expansion" "-mod=<dayz map mod>,<dayz player mod>" -cpuCount=2 -name=HeadlessClient -profiles=HeadlessClient 
+    
+9)  If your headless client is in the gray civilian slot in the lobby, then yay!  Otherwise, kick the HeadlessClient from the server administrator controls.  If the headless client won't reconnect into the lobby, kill the process and restart it.
