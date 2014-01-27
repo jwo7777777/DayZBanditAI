@@ -46,7 +46,7 @@ Compatibility
 - Buildings spawned by DayZ's CfgTownGenerator are invisible to AI, meaning they can walk, see, and shoot through these objects. DZAI includes an experimental fix for this issue. Enable this fix by setting DZAI_objPatch = true in dzai_config.sqf. This fix takes about 60-90 seconds to run at server start. (This option is especially important for original DayZ and DayZ Overwatch).
 - Note: The above doesn't apply to the majority of addons that add buildings to the map.
 
-Installation instructions are included in the Installation directory.
+Installation instructions are included in the Installation Guides directory.
 
 
 Changelog:
