@@ -7,7 +7,7 @@
 */
 private ["_startTime"];
 
-if (!isServer || !isNil "DZAI_isActive") exitWith {};
+if ((!isServer && hasInterface) || !isNil "DZAI_isActive") exitWith {}; // only servers or headless clients get past this
 DZAI_isActive = true;
 
 _startTime = diag_tickTime;

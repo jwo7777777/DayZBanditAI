@@ -40,7 +40,7 @@ ArmaIIholic
 =======================================================================================================================
 */
 
-if (isServer) then
+if (isServer || (!isDedicated && !hasInterface)) then // server or headless client only
 {
 	waitUntil {!isNil "bis_fnc_init"};
 	_grp = _this select 0;

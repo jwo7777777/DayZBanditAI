@@ -8,7 +8,7 @@
 	Last updated: 12:49 AM 11/19/2013
 */
 private["_unit","_currentWeapon","_weaponMagazine","_needsReload","_nearbyZeds","_marker","_markername","_lastBandage","_bandages","_unitGroup","_needsHeal","_weapongrade","_unitWeapons","_unitMagazines"];
-if (!isServer) exitWith {};
+if (!isServer && hasInterface) exitWith {}; // only servers or headless clients get past this
 if (DZAI_debugLevel > 1) then {diag_log "DZAI Extended Debug: AI resupply script active.";};
 
 _unit = _this select 0;								//Unit to monitor/reload ammo

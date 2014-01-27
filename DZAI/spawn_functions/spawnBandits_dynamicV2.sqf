@@ -12,7 +12,7 @@
 #define CHANCE_HIGH 0.90
 
 private ["_patrolDist","_trigger","_totalAI","_unitGroup","_targetPlayer","_playerPos","_playerDir","_playerCount","_spawnPos","_startTime","_baseDist","_distVariance","_dirVariance","_spawnChance","_vehPlayer"];
-if (!isServer) exitWith {};
+if (!isServer && hasInterface) exitWith {}; // only servers or headless clients get past this
 
 _startTime = diag_tickTime;
 

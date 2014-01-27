@@ -7,7 +7,7 @@
 	
 */
 
-if (!isServer) exitWith {};
+if (!isServer && hasInterface) exitWith {}; // only servers or headless clients get past this
 
 private ["_vehicle","_unitGroup","_cleanupTime","_crewCount","_killer"];
 

@@ -7,7 +7,7 @@
 	
 */
 
-if (!isServer) exitWith {};
+if (!isServer && hasInterface) exitWith {}; // only servers or headless clients get past this
 
 private ["_vehicle","_vehWeapons","_markername","_marker","_startTime","_timePatrolled","_unitGroup","_wpmarkername","_wpmarker","_vehOK","_driverOK"];
 

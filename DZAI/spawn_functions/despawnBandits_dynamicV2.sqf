@@ -6,7 +6,7 @@
 */
 
 private ["_trigger","_grpArray","_isCleaning","_grpCount","_waitTime","_forceDespawn","_triggerLocation"];
-if (!isServer) exitWith {};										//Execute script only on server.
+if (!isServer && hasInterface) exitWith {}; // only servers or headless clients get past this
 
 _trigger = _this select 0;										//Get the trigger object
 

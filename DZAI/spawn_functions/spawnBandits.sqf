@@ -9,7 +9,7 @@
 */
 
 private ["_minAI","_addAI","_patrolDist","_trigger","_equipType","_numGroups","_grpArray","_triggerPos","_totalAI","_spawnPositions","_spawnCount","_positionArray","_locationArray","_startTime","_tMarker","_totalSpawned"];
-if (!isServer) exitWith {};
+if (!isServer && hasInterface) exitWith {}; // only servers or headless clients get past this
 
 _startTime = diag_tickTime;
 
