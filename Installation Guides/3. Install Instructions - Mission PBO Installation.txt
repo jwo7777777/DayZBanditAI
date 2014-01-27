@@ -138,7 +138,7 @@ Headless Client barebones how to:
 			.... (other stuff)
 
 
-7) Still in mission.sqm DELETE class Item99 from the west side (should be a little above the change you just made)
+7) Still in mission.sqm DELETE class Item99 (assuming your server package has mission files with 100 spawn points for players, otherwise delete the last point OR up your allowed players by 1 to account for the headless client spawn point) from the west side (should be a little above the change you just made)
 
 	class Item99
 	{
